@@ -11,7 +11,7 @@ namespace ATMSimulator
      * The bank will credit the account with 50% additional amount for every dollar deposited by the account holder
      * Additionally A minimum interest rate is payable on the deposits held in a Savings Account*/
 
-    public class SavingsAccount
+    public class SavingsAccount : Account
     {
         //Code for Savings Account
         private struct ChqAcctConstants
@@ -24,6 +24,10 @@ namespace ATMSimulator
              * through the name of the class along with the DOT notation*/
             public const double MIN_INTEREST_RATE = 3.0;
         }
+        //initialize the account object in the constructor class. Call the base class method to initialize the values
+        public SavingsAccount(int acctNumber = -1, string acctHolderName = " ", int id = 0) : base(acctNumber, acctHolderName)
+        {
 
+        }
     }
 }

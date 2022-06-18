@@ -11,7 +11,7 @@ namespace ATMSimulator
         //Main method for the application
         static void Main(string[] args)
         {
-            //code for Main Method
+            //Code for Main method
         }
     }
 }

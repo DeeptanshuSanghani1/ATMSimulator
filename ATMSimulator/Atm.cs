@@ -8,10 +8,8 @@ namespace ATMSimulator
 {
     /*The Atm class represents an ATM machine. The class displays the main menu and the account menu 
      * and performs the account management functions on a bank account: checking balance, withdrawal and depositing amount*/
-    class ATM
+    class ATM : Bank
     {
-        //Code for ATM class
-
         private enum Options
         {
             //MAIN MENU options

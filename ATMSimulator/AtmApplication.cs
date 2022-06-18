@@ -9,6 +9,7 @@ namespace ATMSimulator
     //ATM Simulator creates the link between the bank and the ATM and executes the ATM code
     public class ATMApplication
     {
-        //Code for ATM Application
+        //Instance to invoke Bank
+        Bank bank = new Bank();
     }
 }

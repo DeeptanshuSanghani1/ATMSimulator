@@ -28,5 +28,51 @@ namespace ATMSimulator
             ACCOUNT_TYPE_CHEQUING = 1,
             ACCOUNT_TYPE_SAVINGS = 2
         }
+
+        /*Define a bank account and its associated attributes
+
+        Attributes:
+        acctNumber      : int      -- the account number, read-only attribute
+        acctHolderName  : string   -- the name of the account holder, read-only attribute
+        acctBalance     : double   -- the account balance that gets affected by withdrawls and deposits
+        annualIntrRate  : double   -- the annual interest rate applicable on the balance
+        */
+
+        public int acctNumber 
+        { 
+            get { return this.acctNumber; }
+            set { this.acctNumber = value; }
+        }
+        public string acctHolderName 
+        {
+            get { return this.acctHolderName; }
+            set { this.acctHolderName = value; }
+        }
+        public double acctBalance 
+        {
+            get { return this.acctBalance; }
+            set { this.acctBalance = value; }
+        }
+        public double annualIntrRate 
+        {
+            get { return this.annualIntrRate; }
+            set { this.annualIntrRate = value; }
+        }
+
+        /* Constructor Class - initialize the account attributes
+         * The account constructor requires the caller to supply an account number and the name of the account holder 
+         * in order to create an account. 
+         * The constructor assigns default values to each parameter allowing the code not to supply them (i.e. acct = Account()). 
+         * If the calling code does not supply values for the two parameters they will receive these default values. This is used 
+         * when the accounts are created from data files
+         */
+
+        public Account (int _acctNumber = -1, string _acctHolderName = " ")
+        {
+            this.acctNumber = _acctNumber;
+            this.acctHolderName = _acctHolderName;
+            this.acctBalance = 0.0;
+            this.annualIntrRate = 0.0;
+        }
     }
 }
