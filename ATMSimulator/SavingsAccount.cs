@@ -29,5 +29,17 @@ namespace ATMSimulator
         {
 
         }
+
+        /* Change the Annual interest Rate for the Savings Account. Validate that the rate is valid for a savings account */
+        public void SetAnnualIntrRate(double newAnnualIntrRatePerc)
+        {
+
+        }
+
+        /* Deposit the given amount + 0.5 dollars for every dollar in the account and return the new balance */
+        public new double Deposit(double amount)
+        {
+            return 0.0;
+        }
     }
 }

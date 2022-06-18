@@ -30,5 +30,44 @@ namespace ATMSimulator
             accountlist = new List<Account>();
         }
 
+        /* Method to load the account data for all the accounts. The account data files are stored in a directory
+         * named BankingData located in the current directory, the directory used to run the application from */
+        public void LoadAccountData()
+        {
+
+        }
+
+        /* Method to save the data for all accounts in the data directory of the application. Each account is
+         * saved in a separate file which contains all the account information.The account data files are stored in a
+         * directory named BankingData located in the current directory, the directory used to run the application from */
+        public void SaveAccountData()
+        {
+
+        }
+
+        /* Create 110 default accounts with predefined IDs and balances. The default accounts are created only if no account information
+         * is availabble */
+        public void CreateDefaultAccounts()
+        {
+
+        }
+
+        //Returns the account with the given account number or null if no account with that ID can be found
+        public int FindAccount(int acctNo)
+        {
+            return 0;
+        }
+
+        //Validate the correct Account number and prompt user until the correct information is entered
+        public void DetermineAccountNumber()
+        {
+
+        }
+
+        //Create and store an account object with the required attributes
+        public void OpenAccount(String _clientName, int _acctType)
+        {
+
+        }
     }
 }

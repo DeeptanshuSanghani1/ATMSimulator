@@ -28,5 +28,16 @@ namespace ATMSimulator
 
         }
 
+        /* Change the Annual interest Rate for the Chequing Account. Validate that the rate is valid for a chequing account */
+        public void SetAnnualIntrRate(double newAnnualIntrRatePerc)
+        {
+
+        }
+
+        /* Withdraw the given amount from the account keeping the overdraft limit in mind and return the new balance */
+        public double withdraw(double amount)
+        {
+            return 0.0;
+        }
     }
 }

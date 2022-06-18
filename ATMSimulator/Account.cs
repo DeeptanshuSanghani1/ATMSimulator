@@ -56,7 +56,7 @@ namespace ATMSimulator
         public double annualIntrRate 
         {
             get { return this.annualIntrRate; }
-            set { this.annualIntrRate = value; }
+            set { this.annualIntrRate = value / 100; }
         }
 
         /* Constructor Class - initialize the account attributes
@@ -73,6 +73,30 @@ namespace ATMSimulator
             this.acctHolderName = _acctHolderName;
             this.acctBalance = 0.0;
             this.annualIntrRate = 0.0;
+        }
+
+        /* Deposit the given amount in the account and return the new balance */
+        public double Deposit(double amount)
+        {
+            return 0.0;
+        }
+
+        /* Withdraw the given amount from the account, reduce the balance and return the new balance */
+        public double Withdraw(double amount)
+        {
+            return 0.0;
+        }
+
+        /* Load the account information from the given file */
+        public void Load(string accountFile)
+        {
+
+        }
+
+        /* Save the account information in the given file */
+        public void Save(string accountFile)
+        {
+
         }
     }
 }
