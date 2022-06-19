@@ -23,7 +23,7 @@ namespace ATMSimulator
         }
 
         //initialize the account object in the constructor class. Call the base class method to initialize the values
-        public ChequingAccount(int acctNumber = -1, string acctHolderName = " ", int id = 0) : base(acctNumber, acctHolderName)
+        public ChequingAccount(int acctNumber = -1, string acctHolderName = " ") : base(acctNumber, acctHolderName)
         {
 
         }
@@ -31,12 +31,29 @@ namespace ATMSimulator
         /* Change the Annual interest Rate for the Chequing Account. Validate that the rate is valid for a chequing account */
         public void SetAnnualIntrRate(double newAnnualIntrRatePerc)
         {
-
+            /* If newAnnualIntrRatePerc > Max Interest Rate (constant value from enum above)
+             *      throw InvalidValue error "A chequing account cannot have an interest rate greater than " + Max Interest Rate
+             *      
+             * execute method setAnnualIntrRate from Account class by passing newAnnualIntrRatePerc
+             * 
+             */
         }
 
         /* Withdraw the given amount from the account keeping the overdraft limit in mind and return the new balance */
         public double withdraw(double amount)
         {
+            /* Arguments: the amount to be withdrawn
+             * 
+             * If amount is less than 0
+             *      throw InvalidTransaction exception with message "Invalid amount provided. Cannot withdraw a negative amount."
+             * 
+             * if amount is greater than sum of acctBalance + overdraft limit (constant value from enum above)
+             *      throw InvalidTransaction exception with message "Insufficient funds. Cannot withdraw the provided amount.
+             *      
+             * Substract amount from acctBalance 
+             * 
+             * return acctBalance 
+             */
             return 0.0;
         }
     }

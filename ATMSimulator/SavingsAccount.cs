@@ -25,21 +25,34 @@ namespace ATMSimulator
             public const double MIN_INTEREST_RATE = 3.0;
         }
         //initialize the account object in the constructor class. Call the base class method to initialize the values
-        public SavingsAccount(int acctNumber = -1, string acctHolderName = " ", int id = 0) : base(acctNumber, acctHolderName)
+        public SavingsAccount(int acctNumber = -1, string acctHolderName = " ") : base(acctNumber, acctHolderName)
         {
-
+            /* NOTE: the constructor assigns default values to each parameter allowing the code
+             * not to supply them(i.e.acct = SavingsAccount()).If the calling code does not supply
+             * values for the two parameters they will receive these default values.This is used
+             * when the accounts are created from data files
+             */
         }
 
         /* Change the Annual interest Rate for the Savings Account. Validate that the rate is valid for a savings account */
         public void SetAnnualIntrRate(double newAnnualIntrRatePerc)
         {
+            /* If newAnnualIntrRatePerc < Min Interest Rate (constant value from enum above)
+             *      throw InvalidValue error "A savings account cannot have an interest rate less than " + Min Interest Rate
+             *      
+             * execute method setAnnualIntrRate from Account class by passing newAnnualIntrRatePerc
+             * 
+             */
 
         }
 
         /* Deposit the given amount + 0.5 dollars for every dollar in the account and return the new balance */
-        public new double Deposit(double amount)
+        public void Deposit(double amount)
         {
-            return 0.0;
+            /* Arguments: amount to be deposited
+             * 
+             * execute Deposit method from Account class with amount = [amount + (amount * Matching Deposit ratio)]
+             */
         }
     }
 }

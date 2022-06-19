@@ -12,6 +12,7 @@ namespace ATMSimulator
         static void Main(string[] args)
         {
             //Code for Main method
+            /* Call the ATMApplication AccountData method here*/
         }
     }
 }

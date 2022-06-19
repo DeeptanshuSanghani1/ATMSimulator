@@ -78,25 +78,67 @@ namespace ATMSimulator
         /* Deposit the given amount in the account and return the new balance */
         public double Deposit(double amount)
         {
+            /* Arguments: The amount to be deposited
+             * If amount is less than 0
+             *      throw InvalidTransaction error with message "Invalid amount provided. Cannot deposit a negative amount."
+             *      
+             * Add amount to acctBalance value
+             * 
+             * return acctBalance
+             */
             return 0.0;
         }
 
         /* Withdraw the given amount from the account, reduce the balance and return the new balance */
         public double Withdraw(double amount)
         {
+            /* Arguments: The amount to be withdrawan
+             * If amount is less than 0
+             *      throw InvalidTransaction error with message "Invalid amount provided. Cannot withdraw a negative amount."
+             *      
+             * If amount is greater than acctBalance
+             *      throw InvalidTransaction error with message "Insufficient funds. Cannot withdraw the provided amount."
+             *      
+             * Subtract amount from acctBalance value
+             * 
+             * return acctBalance
+             */
             return 0.0;
         }
 
         /* Load the account information from the given file */
         public void Load(string accountFile)
         {
-
+            /* if accountFile exists
+             *      open accountFile
+             *      using StreamReader read file line by line
+             *      skip first line
+             *      store value from second line in acctNo
+             *      store value from third line in acctHolderName
+             *      store value from fourth line in acctBalance
+             *      store value from fifth linein acctIntrRate
+             * 
+             * Close accountFile
+             */
         }
 
         /* Save the account information in the given file */
         public void Save(string accountFile)
         {
-
+            /* Write the account properties in accountFile one property per line
+             * 
+             * if accountFile exists
+             *      open accountFile
+             *      using StreamReader write file one per line
+             *      
+             *      write acctType on first line
+             *      write acctNo on second line
+             *      write acctHolderName on third line
+             *      write acctBalance on fourth line
+             *      write acctIntrRate on fifth line
+             * 
+             * close accountFile
+             */
         }
     }
 }

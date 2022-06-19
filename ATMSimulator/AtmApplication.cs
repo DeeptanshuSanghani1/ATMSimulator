@@ -11,16 +11,11 @@ namespace ATMSimulator
     {
         public static void AccountData()
         {
-            try
-            {
-                //Create a Bank for a real-life like implementation
-                Bank bank = new Bank();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("An error occurred with the following message: ", e);
-            }
+            /* Create a Bank - object for the Bank
+             * Load all Accounts from the Bank. Call the method for loading account data.
+             * Then create the ATM object within the bank and start the ATM 
+             * Catch exceptions using the try catch method
+             */
         }
     }
 }
