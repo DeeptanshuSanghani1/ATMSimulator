@@ -11,6 +11,13 @@ namespace ATMSimulator
     {
         public static void AccountData()
         {
+            Bank bank = new Bank();
+
+            bank.LoadAccountData();
+
+            ATM atm = new ATM();
+            atm.StartATM();
+
             /* Create a Bank - object for the Bank
              * Load all Accounts from the Bank. Call the method for loading account data.
              * Then create the ATM object within the bank and start the ATM 

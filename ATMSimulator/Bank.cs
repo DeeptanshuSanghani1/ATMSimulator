@@ -104,16 +104,15 @@ namespace ATMSimulator
         }
 
         //Returns the account with the given account number or null if no account with that ID can be found
-        public Array FindAccount(int acctNo)
+        public List<Account> FindAccount(int acctNo)
         {
             /* Find Account Parameters: acctNo - The account number to be search
-             *              Return: All account data (name, account balance, annual interest rate) for the given account number
-             * For Accounts in accountList
-             *      if acctNo == Accounts.getAccountNumber();
-             *          return Accounts
-             *          
-             * otherwise return a null array
-             */
+             *              Return: All account data (name, account balance, annual interest rate) for the given account number*/
+            /*foreach (List<Account> accounts in accountlist)
+            {
+                if (acctNo == accounts.getAccountNumber();
+                return accounts;
+            }*/
             return null;
         }
 

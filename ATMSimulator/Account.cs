@@ -15,7 +15,9 @@ namespace ATMSimulator
     //Exception class used when an invalid value is entered
     public class InvalidValue : Exception
     {
-        //Code for InvalidValue exception
+        public InvalidValue() { }
+
+        public InvalidValue(string errormessage) : base(errormessage) { }
     }
 
     /* The Account class is used by the Bank moodule. It defines the bank account and its corresponding attributes

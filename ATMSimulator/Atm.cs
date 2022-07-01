@@ -27,70 +27,59 @@ namespace ATMSimulator
         //Start the ATM program by displaying the user options
         public void StartATM()
         {
-            /* Starts the ATM program by displaying the main menu options
-             * 
-             * While the user does not select option to Exit
-             *      Create int variable selectedOption
-             * 
-             *      Accept value in selectedOption from ShowMainMenu()
-             * 
-             *      If selectedOption = Select Account Option
-             *          execute SelectAccount() method and store value in acctNo
-             *          if acctNo is available
-             *              execute ManageAccount() method
-             *      else if selectedOption = Create Account Option
-             *          execute OnCreateAccount() method
-             *      else if selectedOption = Exit ATM Application Option
-             *          execute SaveAccountData() method from bank
-             *          return
-             */
-
+            while (true)
+            {
+                int selectedOption = ShowMainMenu();
+                switch (selectedOption)
+                {
+                    case (int)Options.SELECT_ACCOUNT_OPTION:
+                        int acctNo = SelectAccount();
+                        if (acctNo != 0 || !String.IsNullOrEmpty(Convert.ToString(acctNo)))
+                        {
+                            ManageAccount(acctNo);
+                        }
+                        break;
+                    case (int)Options.CREATE_ACCOUNT_OPTION:
+                        OnCreateAccount();
+                        break;
+                    case ((int)Options.EXIT_ATM_APPLICATION_OPTION):
+                        SaveAccountData();
+                        break;
+                }
+            }
         }
 
         /* Display the Main Menu and ensure the user picks an option. */
         public int ShowMainMenu()
         {
-            /* The method handles non-numeric invalid input but does not check if the user input is the one displayed
-             * While the user does not select an option
-             * 
-             * Output Main Menu
-             * Leave 2 lines
-             * Output 1. Select Account
-             * Leave 1 line
-             * Output 2. Create Account
-             * Leave 1 line
-             * Output 3. Exit
-             * Leave 2 lines
-             * Output Enter a choice: 
-             * 
-             * throw ValueError if the user enters a non-numeric value
-             * Message for ValueError "Please enter a valid menu option."
-             */
-            return 0;
+            while (true)
+            {
+                Console.WriteLine("\nMain Menu\n\n1: Select Account\n2: Create Account\n3: Exit\n\nEnter a choice: ");
+                int val = Convert.ToInt32(Console.ReadLine());
+                if(val == Convert.ToInt32(Options.SELECT_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.CREATE_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.EXIT_ATM_APPLICATION_OPTION))
+                {
+                    return val;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid menu option.");
+                }
+            }          
         }
 
         /* Display the Account Menu and ensure the user picks an option.*/
         public int ShowAccountMenu()
         {
-            /* The method handles non-numeric invalid input but does not check if the user input is the one displayed 
-             * While the user does not select an option
-             * 
-             * Output Account Menu
-             * Leave 2 lines
-             * Output 1. Check Balance
-             * Leave 1 line
-             * Output 2. Withdraw
-             * Leave 1 line
-             * Output 3. Deposit
-             * Leave 1 line
-             * Output 4. Exit
-             * Leave 2 lines
-             * Output Enter a choice: 
-             * 
-             * throw ValueError if the user enters a non-numeric value
-             * Message for ValueError "Please enter a valid menu option."
-             */
-            return -1;
+            while (true)
+            {
+                Console.WriteLine("\nAccount Menu\n\n1: Check Balance\n2: Withdraw\n3: Deposit\n4: Exit\n\nEnter a choice: ");
+                int acctMenuVal = Convert.ToInt32(Console.ReadLine());
+                if (acctMenuVal == Convert.ToInt32(Options.CHECK_BALANCE_OPTION) || acctMenuVal == Convert.ToInt32(Options.WITHDRAW_OPTION) ||
+                    acctMenuVal == Convert.ToInt32(Options.DEPOSIT_OPTION) || acctMenuVal == Convert.ToInt32(Options.EXIT_ACCOUNT_OPTION))
+                    return acctMenuVal;
+                else
+                    Console.WriteLine("Please enter a valid menu option for account menu");
+            }
         }
 
         /* Create and Open an account. */
@@ -129,51 +118,55 @@ namespace ATMSimulator
         /* Select an account by prompting the user for an account number. */
         public int SelectAccount()
         {
-            /* Once account is validated, prompt the user to perform account operations like deposit and withdrawal
-             * 
-             * While the user does not select an account
-             * 
-             * create an int variable acctNoInput
-             * Output "Please enter your account ID or press [ENTER] to cancel:"
-             * Read user input
-             * 
-             * If length of acctNoInput is 0 
-             *      return -1
-             * 
-             * Create an object acct
-             * execute findAccount method from Bank class and store the return object in acct
-             * 
-             * if object is not null
-             *   return acct object
-             * else
-             *   Output to Console "The account was not found. Please select another account."
-             * 
-             * throw ValueError with message "Please enter a valid account number (e.g. 100)"
-             */
+            while (true)
+            {
+                Console.WriteLine("Please enter your account ID or press [ENTER] to cancel: ");
+                String acctNoInput = Console.ReadLine();
 
-            return -1;
+                if (acctNoInput.Length == 0)
+                {
+                    return -1;
+                }
+
+                int acctNo = Convert.ToInt32(acctNoInput);
+
+                /*List<Account> acct = FindAccount(acctNo);
+                if (acct == null)
+                {
+                    Console.WriteLine("The account was not found. Please select another account.");
+                }
+                else
+                {*/
+                    return 100;
+                //}
+            }
         }
 
         /*Manage the account by allowing user to perform operations on the given account*/
-        public void ManageAccount(List<Account> account)
+        public void ManageAccount(int account)
         {
-            /* While the user does not select option to Exit
-             * 
-             * create int variable selAcctMenuOpt
-             * execute method ShowAccountMenu and store the return value in selAcctMenuOpt
-             * 
-             * if selAcctMenuOpt = Check Balance Option
-             *      execute method OnCheckBalance with account as parameter
-             * else if selAcctMenuOpt = Withdraw Option
-             *      execute method OnWithdraw with account as parameter
-             * else if selAcctMenuOpt = Deposit Option
-             *      execute method OnDeposit with account as parameter
-             * else if selAcctMenuOpt = Exit
-             *      return
-             * else
-             *      Output to Console "Please enter a valid menu option"
-             */
+            while (true)
+            {
+                int selAcctMenuOpt = ShowAccountMenu();
 
+                switch (selAcctMenuOpt)
+                {
+                    case (int)Options.CHECK_BALANCE_OPTION:
+                        //OnCheckBalance(account);
+                        break;
+                    case (int)(Options.WITHDRAW_OPTION):
+                        //OnWithdrawal(account);
+                        break;
+                    case (int)(Options.DEPOSIT_OPTION):
+                        //OnDeposit(account);
+                        break;
+                    case (int)(Options.EXIT_ACCOUNT_OPTION):
+                        return;
+                    default:
+                        Console.WriteLine("Please enter a valid menu option");
+                        break;
+                }
+            }
         }
 
         /* Prompt the user to enter Client Name for creating a new account. Allows the user to cancel operation by pressing Enter*/
