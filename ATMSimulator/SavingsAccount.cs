@@ -25,7 +25,7 @@ namespace ATMSimulator
             public const double MIN_INTEREST_RATE = 3.0;
         }
         //initialize the account object in the constructor class. Call the base class method to initialize the values
-        public SavingsAccount(int acctNumber = -1, string acctHolderName = " ") : base(acctNumber, acctHolderName)
+        public SavingsAccount(string acctType = "SavingsAccount", int acctNumber = -1, string acctHolderName = " ") : base(acctType, acctNumber, acctHolderName)
         {
             /* NOTE: the constructor assigns default values to each parameter allowing the code
              * not to supply them(i.e.acct = SavingsAccount()).If the calling code does not supply

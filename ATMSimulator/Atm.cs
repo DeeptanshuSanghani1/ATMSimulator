@@ -33,10 +33,10 @@ namespace ATMSimulator
                 switch (selectedOption)
                 {
                     case (int)Options.SELECT_ACCOUNT_OPTION:
-                        int acctNo = SelectAccount();
-                        if (acctNo != 0 || !String.IsNullOrEmpty(Convert.ToString(acctNo)))
+                        Account acct = SelectAccount();
+                        if (!String.IsNullOrEmpty(Convert.ToString(acct)))
                         {
-                            ManageAccount(acctNo);
+                            ManageAccount(acct);
                         }
                         break;
                     case (int)Options.CREATE_ACCOUNT_OPTION:
@@ -81,8 +81,62 @@ namespace ATMSimulator
                     Console.WriteLine("Please enter a valid menu option for account menu");
             }
         }
+        
+        /* Select an account by prompting the user for an account number. */
+        public Account SelectAccount()
+        {
+            while (true)
+            {
+                Console.WriteLine("Please enter your account ID or press [ENTER] to cancel: ");
+                String acctNoInput = Console.ReadLine();
 
-        /* Create and Open an account. */
+                if (acctNoInput.Length == 0)
+                {
+                    return null;
+                }
+
+                int acctNo = Convert.ToInt32(acctNoInput);
+
+                Account acct = FindAccount(acctNo);
+                if (acct == null)
+                {
+                    Console.WriteLine("The account was not found. Please select another account.");
+                }
+                else
+                {
+                    return acct;
+                }
+            }
+        }
+
+        /*Manage the account by allowing user to perform operations on the given account*/
+        public void ManageAccount(Account account)
+        {
+            while (true)
+            {
+                int selAcctMenuOpt = ShowAccountMenu();
+
+                switch (selAcctMenuOpt)
+                {
+                    case (int)Options.CHECK_BALANCE_OPTION:
+                        OnCheckBalance(account);
+                        break;
+                    case (int)(Options.WITHDRAW_OPTION):
+                        //OnWithdrawal(account);
+                        break;
+                    case (int)(Options.DEPOSIT_OPTION):
+                        //OnDeposit(account);
+                        break;
+                    case (int)(Options.EXIT_ACCOUNT_OPTION):
+                        return;
+                    default:
+                        Console.WriteLine("Please enter a valid menu option");
+                        break;
+                }
+            }
+        }
+
+         /* Create and Open an account. */
         public void OnCreateAccount()
         {
             /*
@@ -114,61 +168,6 @@ namespace ATMSimulator
              * return once all values are available
              */
         }
-
-        /* Select an account by prompting the user for an account number. */
-        public int SelectAccount()
-        {
-            while (true)
-            {
-                Console.WriteLine("Please enter your account ID or press [ENTER] to cancel: ");
-                String acctNoInput = Console.ReadLine();
-
-                if (acctNoInput.Length == 0)
-                {
-                    return -1;
-                }
-
-                int acctNo = Convert.ToInt32(acctNoInput);
-
-                /*List<Account> acct = FindAccount(acctNo);
-                if (acct == null)
-                {
-                    Console.WriteLine("The account was not found. Please select another account.");
-                }
-                else
-                {*/
-                    return 100;
-                //}
-            }
-        }
-
-        /*Manage the account by allowing user to perform operations on the given account*/
-        public void ManageAccount(int account)
-        {
-            while (true)
-            {
-                int selAcctMenuOpt = ShowAccountMenu();
-
-                switch (selAcctMenuOpt)
-                {
-                    case (int)Options.CHECK_BALANCE_OPTION:
-                        //OnCheckBalance(account);
-                        break;
-                    case (int)(Options.WITHDRAW_OPTION):
-                        //OnWithdrawal(account);
-                        break;
-                    case (int)(Options.DEPOSIT_OPTION):
-                        //OnDeposit(account);
-                        break;
-                    case (int)(Options.EXIT_ACCOUNT_OPTION):
-                        return;
-                    default:
-                        Console.WriteLine("Please enter a valid menu option");
-                        break;
-                }
-            }
-        }
-
         /* Prompt the user to enter Client Name for creating a new account. Allows the user to cancel operation by pressing Enter*/
         public string PromptForClientName()
         {
@@ -245,14 +244,10 @@ namespace ATMSimulator
         }
 
         /* Print the Balance on the given account to the console */
-        public void OnCheckBalance(List<Account> account)
+        public void OnCheckBalance(Account account)
         { 
-            /* Arguments: Account List for which balance needs to be printed
-             * 
-             * Output to Console "The balance in account" + acctNumber + " is " + account.getAccountBalance()
-             * 
-             */
-        
+            /* Arguments: Account List for which balance needs to be printed*/
+            Console.WriteLine("The balance in account " + account.acctNumber + " is " + account.acctBalance);
         }
 
         /* Prompts the user to enter amount for deposit. Validates data for invalid value and incorrect amount */

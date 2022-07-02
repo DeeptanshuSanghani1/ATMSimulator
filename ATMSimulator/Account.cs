@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ATMSimulator
 {
@@ -40,25 +41,36 @@ namespace ATMSimulator
         annualIntrRate  : double   -- the annual interest rate applicable on the balance
         */
 
+        private string accttype;
+        private int acctno;
+        private string accountname;
+        private double acctbal;
+        private double intrate;
+
+        public string acctType
+        {
+            get { return accttype; }
+            set { this.accttype = value; }
+        }
         public int acctNumber 
         { 
-            get { return this.acctNumber; }
-            set { this.acctNumber = value; }
+            get { return this.acctno; }
+            set { this.acctno = value; }
         }
         public string acctHolderName 
         {
-            get { return this.acctHolderName; }
-            set { this.acctHolderName = value; }
+            get { return this.accountname; }
+            set { this.accountname = value; }
         }
         public double acctBalance 
         {
-            get { return this.acctBalance; }
-            set { this.acctBalance = value; }
+            get { return this.acctbal; }
+            set { this.acctbal = value; }
         }
         public double annualIntrRate 
         {
-            get { return this.annualIntrRate; }
-            set { this.annualIntrRate = value / 100; }
+            get { return this.intrate; }
+            set { this.intrate = value / 100; }
         }
 
         /* Constructor Class - initialize the account attributes
@@ -69,8 +81,9 @@ namespace ATMSimulator
          * when the accounts are created from data files
          */
 
-        public Account (int _acctNumber = -1, string _acctHolderName = " ")
+        public Account (string _accttype = "Account", int _acctNumber = -1, string _acctHolderName = " ")
         {
+            this.accttype = _accttype;
             this.acctNumber = _acctNumber;
             this.acctHolderName = _acctHolderName;
             this.acctBalance = 0.0;
@@ -80,15 +93,14 @@ namespace ATMSimulator
         /* Deposit the given amount in the account and return the new balance */
         public double Deposit(double amount)
         {
-            /* Arguments: The amount to be deposited
-             * If amount is less than 0
-             *      throw InvalidTransaction error with message "Invalid amount provided. Cannot deposit a negative amount."
-             *      
-             * Add amount to acctBalance value
-             * 
-             * return acctBalance
-             */
-            return 0.0;
+            /* Arguments: The amount to be deposited */
+             
+             if (amount < 0)
+            {
+                Console.WriteLine("Invlaid amount provided. Cannot deposit a negative amount.");
+            }
+
+            return this.acctBalance + amount;
         }
 
         /* Withdraw the given amount from the account, reduce the balance and return the new balance */
@@ -109,19 +121,23 @@ namespace ATMSimulator
         }
 
         /* Load the account information from the given file */
-        public void Load(string accountFile)
+        public List<Account> Load(string accountFile, List<Account> list)
         {
-            /* if accountFile exists
-             *      open accountFile
-             *      using StreamReader read file line by line
-             *      skip first line
-             *      store value from second line in acctNo
-             *      store value from third line in acctHolderName
-             *      store value from fourth line in acctBalance
-             *      store value from fifth linein acctIntrRate
-             * 
-             * Close accountFile
-             */
+            using (FileStream acctFileStream = new FileStream(accountFile, FileMode.Open, FileAccess.Read))
+            {
+                StreamReader sr = new StreamReader(acctFileStream);
+                try 
+                { 
+                    list.Add(new Account{ acctType = sr.ReadLine(), acctNumber = Convert.ToInt32(sr.ReadLine()), acctHolderName = sr.ReadLine(),
+                                            acctBalance = Convert.ToDouble(sr.ReadLine()), annualIntrRate = Convert.ToDouble(sr.ReadLine())
+                    });
+                }
+                finally
+                {
+                    sr.Close();
+                }
+            }
+            return list;
         }
 
         /* Save the account information in the given file */

@@ -23,7 +23,7 @@ namespace ATMSimulator
         }
 
         //initialize the account object in the constructor class. Call the base class method to initialize the values
-        public ChequingAccount(int acctNumber = -1, string acctHolderName = " ") : base(acctNumber, acctHolderName)
+        public ChequingAccount(string acctType = "ChequingAccount", int acctNumber = -1, string acctHolderName = " ") : base(acctType, acctNumber, acctHolderName)
         {
 
         }

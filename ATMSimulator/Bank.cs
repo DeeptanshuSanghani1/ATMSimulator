@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ATMSimulator
 {
@@ -13,7 +14,7 @@ namespace ATMSimulator
     }
 
     //Class for Bank composed of a list of accounts. If accounts are not available, default accounts are created
-    public class Bank
+    public class Bank : Account
     {
         //Define Constant Values
         private enum Constant
@@ -22,42 +23,64 @@ namespace ATMSimulator
         }
 
         //Account List to load and store the accounts and its attributes
-        public List<Account> accountlist;
-
-        //Constructor class or Bank - initialize accountlist
-        public Bank()
-        {
-            accountlist = new List<Account>();
-        }
+        public static List<Account> accountlist = new List<Account>();
 
         /* Method to load the account data for all the accounts. */
         public void LoadAccountData()
         {
             /* The account data files are stored in a directory named BankingData located in the current directory,
-             * the directory used to run the application from 
-             * 
-             * Create a string variable dataDirectory
-             * Get current working directory + "BankingData" in dataDirectory variable
-             * 
-             * If dataDirectory exists
-             *      fetch the list of all files from the directory
-             *      for each file 
-             *          open the file
-             *          read the file line by line
-             *          Load the data into an account object 
-             *          Add the file contents to accountList
-             * finally 
-             *      Close all files
-             *      
-             * If accountList is empty
-             *      CreateDefaultAccounts()
-             */
+             * the directory used to run the application from */
+            string[] paths = new string[] { Environment.CurrentDirectory, "BankingData" };
+            string dataDirectory = Path.Combine(paths);
+
+            if (Directory.Exists(dataDirectory))
+            {
+                //get the list of files in the directory
+                string[] acctFileList = Directory.GetFiles(dataDirectory);
+
+                //go through the list of files, create the appropriate accounts and load the file
+                foreach (string acctFileName in acctFileList)
+                {
+                    string acctFile = Path.Combine(dataDirectory, acctFileName);
+
+                    using (FileStream acctFileStream = new FileStream(acctFile, FileMode.Open, FileAccess.Read))
+                    {
+                        StreamReader sr = new StreamReader(acctFileStream);
+                        try
+                        {
+                            //read the account type and create the correct account
+                            string acctType = sr.ReadToEnd();
+                            if (acctType == "Account")
+                            {
+                                Load(acctFile, accountlist);
+                            }
+                            else if (acctType == "Chequing")
+                            {
+                                Load(acctFile, accountlist);
+                            }
+                            else if (acctType == "Savings")
+                            {
+                                Load(acctFile, accountlist);
+                            }
+                            Console.WriteLine(accountlist);
+                        }
+                        finally
+                        {
+                            sr.Close();
+                        }
+                    }
+                }
+            }
+            if (accountlist.Count == 0)
+                CreateDefaultAccounts();
+
         }
+
 
         /* Method to save the data for all accounts in the data directory of the application. Each account is
          * saved in a separate file which contains all the account information.The account data files are stored in a
          * directory named BankingData located in the current directory, the directory used to run the application from */
-            public void SaveAccountData()
+        public void SaveAccountData()
         {
             /* The account data files are stored in a directory named BankingData located in the current directory,
              * the directory used to run the application from 
@@ -88,31 +111,30 @@ namespace ATMSimulator
          * is availabble */
         public void CreateDefaultAccounts()
         {
-            /* Initialize an array newDefAccount
-             * 
-             * For Account in 1 to 10
-             *      For j in 1 to 3 //Elements in each array
-             *          newDefAccount[Account][j] = DefaultAccountNotoStart + Account //Account Number
-             * 
-             *          newDefAccount[Account][j] = Deposit(100) //Deposit method from Account class to calculate account Balance
-             *          newDefAccount[Account][j] = setAnnualIntrRate(2.5)
-             *      End Loop
-             *      
-             *      Add the newDefAccount to the accountList
-             * End Loop
-             */
+            for (int i = 0; i < 10; i++)
+            {
+                accountlist.Add(new Account
+                {
+                    acctType = "Account",
+                    acctNumber = Convert.ToInt32(Constant.DEFAULT_ACCT_NO_START) + i,
+                    acctHolderName = "DefaultAccount" + i,
+                    acctBalance = Deposit(100),
+                    annualIntrRate = 2.5
+                });
+            }
         }
 
         //Returns the account with the given account number or null if no account with that ID can be found
-        public List<Account> FindAccount(int acctNo)
+        public Account FindAccount(int acctNo)
         {
             /* Find Account Parameters: acctNo - The account number to be search
              *              Return: All account data (name, account balance, annual interest rate) for the given account number*/
-            /*foreach (List<Account> accounts in accountlist)
+            //foreach (List<Account> accounts in accountlist)
+            for(int i=0; i<accountlist.Count; i++)
             {
-                if (acctNo == accounts.getAccountNumber();
-                return accounts;
-            }*/
+                if (accountlist[i].acctNumber.Equals(acctNo))
+                    return accountlist[i];
+            }
             return null;
         }
 
