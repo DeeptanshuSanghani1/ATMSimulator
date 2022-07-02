@@ -35,13 +35,6 @@ namespace ATMSimulator
      * epresents an ATM machine. The class displays the main menu and the account menu */
     public class Account
     {
-        //Code for Account class
-        private enum Constants
-        {
-            ACCOUNT_TYPE_CHEQUING = 1,
-            ACCOUNT_TYPE_SAVINGS = 2
-        }
-
         /*Define a bank account and its associated attributes
 
         Attributes:
@@ -127,6 +120,7 @@ namespace ATMSimulator
         }*/
 
         /* Load the account information from the given file */
+
         public List<Account> Load(string accountFile, List<Account> list)
         {
             using (FileStream acctFileStream = new FileStream(accountFile, FileMode.Open, FileAccess.Read))
@@ -147,22 +141,23 @@ namespace ATMSimulator
         }
 
         /* Save the account information in the given file */
-        public void Save(string accountFile)
+        public void Save(string accountFile, Account account)
         {
-            /* Write the account properties in accountFile one property per line
-             * 
-             * if accountFile exists
-             *      open accountFile
-             *      using StreamReader write file one per line
-             *      
-             *      write acctType on first line
-             *      write acctNo on second line
-             *      write acctHolderName on third line
-             *      write acctBalance on fourth line
-             *      write acctIntrRate on fifth line
-             * 
-             * close accountFile
-             */
+
+            using (FileStream acctFileStream = File.Create(accountFile))
+            {
+                StreamWriter sr = new StreamWriter(acctFileStream);
+                try
+                {
+                    sr.WriteLine(account.accttype);
+                    sr.WriteLine(account.acctNumber);
+                    sr.WriteLine(account.acctHolderName);
+                    sr.WriteLine(account.acctBalance);
+                    sr.WriteLine(account.annualIntrRate);
+                }
+                finally { sr.Close(); }
+            }
+            return;
         }
     }
 }

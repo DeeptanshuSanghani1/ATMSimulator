@@ -44,7 +44,7 @@ namespace ATMSimulator
                         break;
                     case ((int)Options.EXIT_ATM_APPLICATION_OPTION):
                         SaveAccountData();
-                        break;
+                        return;
                 }
             }
         }
@@ -157,108 +157,113 @@ namespace ATMSimulator
          /* Create and Open an account. */
         public void OnCreateAccount()
         {
-            /*
-             * The user is asked for all information to open the account. Create the account object and add it to the bank
-             * 
-             * While the user does not enter all information
-             * 
-             * create a string variable clientName
-             * execute PromptForClientName method and store value in clientName 
-             * 
-             * create a int variable initDepositAmount
-             * execute PromptForDepositAmount method and store value in initDepositAmount
-             * 
-             * create a double variable annIntrRate
-             * execute PromptForAnnualIntrRate method and store value in annIntrRate
-             * 
-             * create int variable acctType
-             * execute PromptForAccountType method and store value in acctType
-             * 
-             * create array newAccount
-             * execute OpenAccount method from Bank class and store value in newAccount
-             * 
-             * execute Deposit method from Account class and by passing initDepositAmount as parameter
-             * Set Annual Interest Rate in newAccount by calling setAnnualIntrRate method
-             * 
-             * throw InvalidValue exception if invalid value is entered
-             * throw OperationCancel exception if user clicks on ENTER without entering a value
-             * 
-             * return once all values are available
-             */
+            //The user is asked for all information to open the account.
+            //Create the account object and add it to the bank
+
+            //Get the name of the account holder
+            string clientName = PromptForClientName();
+
+            //Get the initial deposit amount from user
+            double initialDepositAmount = PromptForDepositAmount();
+
+            //Get the Annual Interest Rate from the user
+            double initialIntRate = PromptForAnnualIntrRate();
+
+            //Get user input for account type
+            string acctType = PromptForAccountType();
+
+            OpenAccount(clientName, acctType, initialDepositAmount, initialIntRate);
+            return;
         }
+
         /* Prompt the user to enter Client Name for creating a new account. Allows the user to cancel operation by pressing Enter*/
         public string PromptForClientName()
         {
-            /* Create a string variable clientName
-             * 
-             * Output to Console "Please enter the client name or press [ENTER] to cancel: "
-             * Read user input and store value in clientName variable
-             * 
-             * If clientName is null
-             *      throw OperationCancel error
-             * 
-             * return clientName
-             */
-            return null;
+            Console.WriteLine("Please enter the client name or press [ENTER] to cancel: ");
+            string _clientName = Console.ReadLine();
+
+            //Check if the client pressed Enter without entering a value
+            if (string.IsNullOrEmpty(_clientName))
+                throw new OperationCancel("The user has cancelled the Operation");
+
+            return _clientName;
         }
 
         /* Prompt the user to enter Deposit Amount for creating a new account. Performs basic error checking*/
         public double PromptForDepositAmount()
         {
-            /* While the user enters a valid value
-             * 
-             * create a private int variable initAmount
-             * Output to console "Please enter your initial account balance: "
-             * Read user input and store value in initAmount
-             * 
-             * If initAmount is greater than or equal to 0
-             *      return initAmount value
-             * else
-             *      Output to Console "Cannot create an account with a negative initial balance. Please enter a valid amount"
-             * 
-             * throw ValueError if a non-numeric value is entered by the user
-             * 
-             */
-            return 0.0;
+            while (true)
+            {
+                string _initamt;
+
+                Console.WriteLine("Please enter your initial account balance: ");
+                
+                //Read and store the user input
+                _initamt = Console.ReadLine();
+                
+                //Check if the client pressed Enter without entering a value
+                if (string.IsNullOrEmpty(_initamt))
+                    throw new OperationCancel("The user has cancelled the Operation");
+
+                double initamt;
+
+                //Check if non-numeric value is entered
+                bool success = double.TryParse(_initamt, out initamt);
+                if (!success)
+                    throw new InvalidValue("Invalid entry. Please enter a number for your amount.");
+
+                //Check if numeric value entered is less than 0
+                if (initamt < 0)
+                    Console.WriteLine("Cannot create an account with a negative initial balance. Please enter a valid amount");
+                else
+                    return initamt;
+            }
         }
 
         /* Prompts the user to enter Annual Interest Rate for creating the account. */
         public double PromptForAnnualIntrRate()
         {
-            /* While the user enters a valid value
-             * 
-             * create a private int variable intrRate
-             * Output to console "Please enter the interest rate for this account: "
-             * Read user input and store value in intrRate
-             * 
-             * If intrRate is greater than or equal to 0
-             *      return initAmount value
-             * else
-             *      Output to Console "Cannot create an account with a negative interest rate."
-             * 
-             * throw ValueError if a non-numeric value is entered by the user
-             * 
-             */
-            return 0.0;
+            while (true)
+            {
+                //Get user input for interest rate
+                Console.WriteLine("Please enter the interest rate for this account: ");
+                string _intrate = Console.ReadLine();
+
+                //Check if the client pressed Enter without entering a value
+                if (string.IsNullOrEmpty(_intrate))
+                    throw new OperationCancel("The user has cancelled the Operation");
+
+                double intrate;
+
+                //Check if non-numeric value is entered
+                bool success = double.TryParse(_intrate, out intrate);
+                if (!success)
+                    throw new InvalidValue("Invalid entry. Please enter a number for your amount.");
+
+                //Check if numeric value entered is less than 0
+                if (intrate < 0)
+                    Console.WriteLine("Cannot create an account with a negative interest rate.");
+                else
+                    return intrate;
+            }
         }
 
         /* Prompts the user to enter Account Type for creating the account. */
-        public int PromptForAccountType()
+        public string PromptForAccountType()
         {
-            /* While the user enters a valid value
-             * 
-             * create a private int variable acctTypeInput 
-             * Output to console "Please enter the account type [c/s: chequing / savings]: "
-             * Read user input and store value in acctTypeInput 
-             * 
-             * if acctTypeInput is in 'C' or 'CHEQUING' or 'CHECKING' 
-             *      return account type chequing constant (From enum in Account class)
-             * else if acctTypeInput is in 'S' or 'SAVINGS' or 'SAVING'
-             *      return account type savings constant (From enum in Account class)
-             * else
-             *      Output to Console "Answer not supported. Please enter one of the supported answers."
-             */
-            return 0;
+            while (true)
+            {
+                Console.WriteLine("Please enter the account type [c/s: chequing / savings]: ");
+                string acctTypeVal = Console.ReadLine().ToUpper();
+
+                //Check Account Type Input and return Chequing or Savings
+                if (acctTypeVal == "C" || acctTypeVal == "CHEQUING" || acctTypeVal == "CHECKING")
+                    return "ChequingAccount";
+                else if (acctTypeVal == "S" || acctTypeVal == "SAVINGS" || acctTypeVal == "SAVING")
+                    return "SavingsAccount";
+                else
+                    Console.WriteLine("Answer not supported. Please enter one of the supported answers.");
+            }
         }
 
         /* Print the Balance on the given account to the console */
@@ -283,10 +288,9 @@ namespace ATMSimulator
 
                     bool success = double.TryParse(inputAmount, out amountToDeposit);
 
+                    //Raise error if deposit amount is negative
                     if (amountToDeposit < 0)
-                    {
                         throw new InvalidTransaction("Invlaid amount provided. Cannot deposit a negative amount.");
-                    }
 
                     //Check if Numeric value is entered, Otherwise throw error
                     if (!success)
@@ -297,7 +301,7 @@ namespace ATMSimulator
 
                     return;
                 }
-                catch (InvalidTransaction ex) { }
+                catch (InvalidTransaction e) { }
                 
             }
         }

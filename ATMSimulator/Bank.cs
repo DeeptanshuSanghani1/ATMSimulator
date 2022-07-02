@@ -8,9 +8,15 @@ using System.IO;
 namespace ATMSimulator
 {
     //Exception Class for user cancel event (when the user cancels the operation by pressing ENTER)
+    [Serializable]
     public class OperationCancel : Exception
     {
-        //Code for OperationCancel exception
+        public OperationCancel() { }
+
+        public OperationCancel(string errormessage) : base(errormessage)
+        {
+            Console.WriteLine(errormessage);
+        }
     }
 
     //Class for Bank composed of a list of accounts. If accounts are not available, default accounts are created
@@ -22,17 +28,18 @@ namespace ATMSimulator
             DEFAULT_ACCT_NO_START = 100
         }
 
-        //Account List to load and store the accounts and its attributes
-        public static List<Account> accountlist = new List<Account>();
+    //Account List to load and store the accounts and its attributes
+    public static List<Account> accountlist = new List<Account>();
 
         /* Method to load the account data for all the accounts. */
         public void LoadAccountData()
         {
             /* The account data files are stored in a directory named BankingData located in the current directory,
              * the directory used to run the application from */
-            string[] paths = new string[] { Environment.CurrentDirectory, "BankingData" };
+            string[] paths = new string[] { Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, "ATM", "BankingData" };
             string dataDirectory = Path.Combine(paths);
 
+            //Check if Directory exists
             if (Directory.Exists(dataDirectory))
             {
                 //get the list of files in the directory
@@ -62,7 +69,6 @@ namespace ATMSimulator
                             {
                                 Load(acctFile, accountlist);
                             }
-                            Console.WriteLine(accountlist);
                         }
                         finally
                         {
@@ -71,6 +77,7 @@ namespace ATMSimulator
                     }
                 }
             }
+            //Create default accounts if no account files are found
             if (accountlist.Count == 0)
                 CreateDefaultAccounts();
 
@@ -83,28 +90,31 @@ namespace ATMSimulator
         public void SaveAccountData()
         {
             /* The account data files are stored in a directory named BankingData located in the current directory,
-             * the directory used to run the application from 
-             * 
-             * Create a string variable dataDirectory
-             * Get current working directory + "BankingData" in dataDirectory variable
-             * 
-             * If ! dataDirectory exists
-             *      create dataDirectory
-             *      
-             * For each account in accountList
-             *      get acctype from accountList
-             *      create a string variable prefix
-             *      
-             *      if acctype = Account then prefix = acct
-             *      else if acctype = Chequing then prefix = chqacct
-             *      else if acctype = Savings then prefix = savacct
-             *      acctFileName = prefix + getAccountNumber() + ".dat"
-             *      
-             *      Open acctFileName
-             *      using StreamReader Write acctype to acctFileName
-             *      Close acctFileName
-             */
+             * the directory used to run the application from */
 
+            string[] paths = new string[] { Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, "ATM", "BankingData" };
+            string dataDirectory = Path.Combine(paths);
+
+            //If the Directory does not exist create the directory
+            if(!Directory.Exists(dataDirectory))
+                Directory.CreateDirectory(dataDirectory);
+
+            //Execute a for loop for all accounts in the list 
+            for(int i=0; i<accountlist.Count; i++)
+            {
+                //Get account type for file name
+                string prefix = null;
+                if (accountlist[i].acctType == "ChequingAccount")
+                    prefix = "chqacct";
+                else if (accountlist[i].acctType == "SavingsAccount")
+                    prefix = "savacct";
+                else
+                    prefix = "acct";
+
+                string acctFileName = Path.Combine(dataDirectory, prefix + accountlist[i].acctNumber + ".dat");
+
+                Save(acctFileName, accountlist[i]);
+            }
         }
 
         /* Create 10 default accounts with predefined IDs and balances. The default accounts are created only if no account information
@@ -141,46 +151,51 @@ namespace ATMSimulator
         //Validate the correct Account number and prompt user until the correct information is entered
         public int DetermineAccountNumber()
         {
-            /* This method will prompt the user to enter the account number and determine if the user input is correct
-             * 
-             * The method will cancel if no value is entered and user clicks on ENTER
-             * 
-             * while the user does not enter a correct value
-             *      Print Please enter the account number [100 - 1000] or press [ENTER] to cancel: 
-             *      Read and store the user input to acctNoInput variable (of type int)
-             * 
-             *      If length of account number is 0 and user clicked on ENTER, throw an OperationCancel error 
-             * 
-             *      If the account number is not between 100 and 1000 throw an InvalidValue error
-             * 
-             *      for loop on the accountList
-             *          if acctNoInput = accountList.getAccountNumber()
-             *              Throw an InvlaidVlaue error with appropriate message 
-             *      return acctNpInput
-             * 
-             * Catch all exceptions thrown
-             * 
-             */
-            return 0;
+            while (true)
+            {
+                Console.WriteLine("Please enter the account number [100 - 1000] or press [ENTER] to cancel: ");
+                string _acctno = Console.ReadLine();
+
+                //Check if the client pressed Enter without entering a value
+                if (string.IsNullOrEmpty(_acctno))
+                    throw new OperationCancel("The user has cancelled the Operation");
+
+                int acctno;
+
+                //Check if non-numeric value is entered
+                bool success = int.TryParse(_acctno, out acctno);
+                if (!success)
+                    throw new InvalidValue("Invalid entry. Please enter a number for your account number.");
+
+                //Check if user input is within the range
+                if(! Enumerable.Range(100,1000).Contains(acctno))
+                    throw new InvalidValue("Invalid entry. Please enter a number for your account number.");
+
+                for (int i=0; i<accountlist.Count; i++)
+                {
+                    if (acctno == accountlist[i].acctNumber)
+                    {
+                        Console.WriteLine("The account number you have entered already exists. Please enter a different account number");
+                        break;
+                    }
+                }
+                return acctno;
+            }
         }
 
         //Create and store an account object with the required attributes
-        public int OpenAccount(String _clientName, int _acctType)
+        public void OpenAccount(String _clientName, string _acctType, double _initialDepAmt, double _initialIntRate)
         {
-            /* int acctNo = DetermineAccountNumber()
- 
-             * If _acctType = Chequing
-             *      newAccount = Create Chequing Account object with acctNo and _clientName
-             * else if _acctType = Savings 
-             *      newAccount = Create Savings Account object with acctNo and _clientName
-             * else
-             *      newAccount = Create Account object with acctNo and _clientName
-             
-             * accountList = Add(newAccount)
-             * 
-             * return newAccount
-             */
-            return -1;
+            int acctNo = DetermineAccountNumber();
+
+            accountlist.Add(new Account
+            {
+                acctType = _acctType,
+                acctNumber = acctNo,
+                acctHolderName = _clientName,
+                acctBalance = _initialDepAmt,
+                annualIntrRate = _initialIntRate
+                });
         }
     }
 }
