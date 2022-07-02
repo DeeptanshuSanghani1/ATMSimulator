@@ -118,7 +118,7 @@ namespace ATMSimulator
                     acctType = "Account",
                     acctNumber = Convert.ToInt32(Constant.DEFAULT_ACCT_NO_START) + i,
                     acctHolderName = "DefaultAccount" + i,
-                    acctBalance = Deposit(100),
+                    acctBalance = 100,
                     annualIntrRate = 2.5
                 });
             }

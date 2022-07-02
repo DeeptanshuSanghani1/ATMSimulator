@@ -54,16 +54,20 @@ namespace ATMSimulator
         {
             while (true)
             {
-                Console.WriteLine("\nMain Menu\n\n1: Select Account\n2: Create Account\n3: Exit\n\nEnter a choice: ");
+                Console.WriteLine("Main Menu");
+                Console.WriteLine();
+                Console.WriteLine("1: Select Account");
+                Console.WriteLine("2: Create Account");
+                Console.WriteLine("3: Exit");
+                Console.WriteLine();
+                Console.WriteLine("Enter a choice: ");
                 int val = Convert.ToInt32(Console.ReadLine());
-                if(val == Convert.ToInt32(Options.SELECT_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.CREATE_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.EXIT_ATM_APPLICATION_OPTION))
+                if (val == Convert.ToInt32(Options.SELECT_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.CREATE_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.EXIT_ATM_APPLICATION_OPTION))
                 {
                     return val;
                 }
                 else
-                {
-                    Console.WriteLine("Please enter a valid menu option.");
-                }
+                   throw new InvalidValue("Please enter a valid menu option.");
             }          
         }
 
@@ -72,13 +76,21 @@ namespace ATMSimulator
         {
             while (true)
             {
-                Console.WriteLine("\nAccount Menu\n\n1: Check Balance\n2: Withdraw\n3: Deposit\n4: Exit\n\nEnter a choice: ");
+                Console.WriteLine("Account Menu");
+                Console.WriteLine();
+                Console.WriteLine("1: Check Balance");
+                Console.WriteLine("2: Withdraw");
+                Console.WriteLine("3: Deposit");
+                Console.WriteLine("4: Exit");
+                Console.WriteLine();
+                Console.WriteLine("Enter a choice: ");
+
                 int acctMenuVal = Convert.ToInt32(Console.ReadLine());
                 if (acctMenuVal == Convert.ToInt32(Options.CHECK_BALANCE_OPTION) || acctMenuVal == Convert.ToInt32(Options.WITHDRAW_OPTION) ||
                     acctMenuVal == Convert.ToInt32(Options.DEPOSIT_OPTION) || acctMenuVal == Convert.ToInt32(Options.EXIT_ACCOUNT_OPTION))
                     return acctMenuVal;
                 else
-                    Console.WriteLine("Please enter a valid menu option for account menu");
+                    throw new InvalidValue("Please enter a valid menu option for account menu");
             }
         }
         
@@ -87,6 +99,8 @@ namespace ATMSimulator
         {
             while (true)
             {
+                int acctNo = 0;
+
                 Console.WriteLine("Please enter your account ID or press [ENTER] to cancel: ");
                 String acctNoInput = Console.ReadLine();
 
@@ -94,8 +108,12 @@ namespace ATMSimulator
                 {
                     return null;
                 }
-
-                int acctNo = Convert.ToInt32(acctNoInput);
+                else
+                {
+                    bool success = int.TryParse(acctNoInput, out acctNo);
+                    if (!success)
+                        throw new InvalidValue("Please enter a valid account number (e.g.100)");
+                }
 
                 Account acct = FindAccount(acctNo);
                 if (acct == null)
@@ -122,10 +140,10 @@ namespace ATMSimulator
                         OnCheckBalance(account);
                         break;
                     case (int)(Options.WITHDRAW_OPTION):
-                        //OnWithdrawal(account);
+                        OnWithdrawal(account);
                         break;
                     case (int)(Options.DEPOSIT_OPTION):
-                        //OnDeposit(account);
+                        OnDeposit(account);
                         break;
                     case (int)(Options.EXIT_ACCOUNT_OPTION):
                         return;
@@ -251,43 +269,68 @@ namespace ATMSimulator
         }
 
         /* Prompts the user to enter amount for deposit. Validates data for invalid value and incorrect amount */
-        public void OnDeposit(List<Account> account)
+        public void OnDeposit(Account account)
         {
-            /* While the user enters correct value
-             * 
-             * create double variable inputAmount
-             * Output to Console "Please enter an amount to deposit or type [ENTER] to exit: "
-             * Read input from user and store in inputAmount
-             * 
-             * if length of inputAmount is greater than 0
-             *      execute method Account.Deposit with inputAmount as parameter
-             *      
-             * return
-             * 
-             * throw ValueError if user entered a non-numeric value
-             * 
-             * throw InvalidTransaction error if the amount cannot be deposited to the account
-             */
+            string inputAmount = null;
+            double amountToDeposit = 0.0;
+
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Please enter an amount to deposit or type [ENTER] to exit: ");
+                    inputAmount = Console.ReadLine();
+
+                    bool success = double.TryParse(inputAmount, out amountToDeposit);
+
+                    if (amountToDeposit < 0)
+                    {
+                        throw new InvalidTransaction("Invlaid amount provided. Cannot deposit a negative amount.");
+                    }
+
+                    //Check if Numeric value is entered, Otherwise throw error
+                    if (!success)
+                        throw new InvalidValue("Invalid entry. Please enter a number for your amount.");
+
+                    //If Amount is greater than 0, deposit the amount
+                    account.acctBalance += amountToDeposit;
+
+                    return;
+                }
+                catch (InvalidTransaction ex) { }
+                
+            }
         }
 
         /* Prompts the user to enter amount for withdrawal. Validates data for invalid value and incorrect amount */
-        public void OnWithdrawal(List<Account> account)
+        public void OnWithdrawal(Account account)
         {
-            /* While the user enters correct value
-             * 
-             * create double variable inputAmount
-             * Output to Console "Please enter an amount to withdraw or type [ENTER] to exit: "
-             * Read input from user and store in inputAmount
-             * 
-             * if length of inputAmount is greater than 0
-             *      execute method Account.withdraw with inputAmount as parameter
-             *      
-             * return
-             * 
-             * throw ValueError if user entered a non-numeric value
-             * 
-             * throw InvalidTransaction error if the amount cannot be deposited to the account
-             */
+            string inputAmount = null;
+            double amountToWithdraw = 0.0;
+            while (true)
+            {
+                Console.WriteLine("Please enter an amount to withdraw or type [ENTER] to exit: ");
+                inputAmount = Console.ReadLine();
+
+                bool success = double.TryParse(inputAmount, out amountToWithdraw);
+                if (!success)
+                    throw new InvalidValue("Invalid entry. Please enter a number for your amount.");
+
+                //Display an error if amount to be withdrawan is less than 0
+                if (amountToWithdraw < 0)
+                    throw new InvalidTransaction("Invalid amount provided. Cannot withdraw a negative amount.");
+
+                //Amount for withdrawal cannot be more than the account balance
+                if (amountToWithdraw > account.acctBalance)
+                    throw new InvalidTransaction("Insufficient funds. Cannot withdraw the provided amount.");
+
+                //Withdraw amount if no errors found
+                if (amountToWithdraw >= 0)
+                    account.acctBalance -= amountToWithdraw;
+
+                //the withdrawal was done or user entered nothing so break from the infinite loop
+                return;
+            }
         }
     }
 }

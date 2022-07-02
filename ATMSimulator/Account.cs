@@ -8,17 +8,27 @@ using System.IO;
 namespace ATMSimulator
 {
     //Exception class used when an invalid trasaction is performed
+    [Serializable]
     public class InvalidTransaction : Exception
     {
-        //Code for InvalidTransaction exception
+        public InvalidTransaction() { }
+
+        public InvalidTransaction(string errormessage) : base(errormessage) 
+        {
+            Console.WriteLine(errormessage);
+        }
     }
 
     //Exception class used when an invalid value is entered
+    [Serializable]
     public class InvalidValue : Exception
     {
         public InvalidValue() { }
 
-        public InvalidValue(string errormessage) : base(errormessage) { }
+        public InvalidValue(string errormessage) : base(errormessage) 
+        { 
+            Console.WriteLine(errormessage);
+        }
     }
 
     /* The Account class is used by the Bank moodule. It defines the bank account and its corresponding attributes
@@ -91,34 +101,30 @@ namespace ATMSimulator
         }
 
         /* Deposit the given amount in the account and return the new balance */
-        public double Deposit(double amount)
+        /*public double Deposit(double amount)
         {
-            /* Arguments: The amount to be deposited */
+            /* Arguments: The amount to be deposited 
              
-             if (amount < 0)
+            if (amount < 0)
             {
-                Console.WriteLine("Invlaid amount provided. Cannot deposit a negative amount.");
+                throw new InvalidTransaction("Invlaid amount provided. Cannot deposit a negative amount.");
             }
 
             return this.acctBalance + amount;
-        }
+        }*/
 
         /* Withdraw the given amount from the account, reduce the balance and return the new balance */
-        public double Withdraw(double amount)
+        /*public double Withdraw(double amount)
         {
-            /* Arguments: The amount to be withdrawan
-             * If amount is less than 0
-             *      throw InvalidTransaction error with message "Invalid amount provided. Cannot withdraw a negative amount."
-             *      
-             * If amount is greater than acctBalance
-             *      throw InvalidTransaction error with message "Insufficient funds. Cannot withdraw the provided amount."
-             *      
-             * Subtract amount from acctBalance value
-             * 
-             * return acctBalance
-             */
-            return 0.0;
-        }
+            /* Arguments: The amount to be withdrawn
+            if (amount < 0)
+                throw new InvalidTransaction("Invalid amount provided. Cannot withdraw a negative amount.");
+
+            if (amount > this.acctBalance)
+                throw new InvalidTransaction("Insufficient funds. Cannot withdraw the provided amount.");
+
+            return this.acctBalance - amount;
+        }*/
 
         /* Load the account information from the given file */
         public List<Account> Load(string accountFile, List<Account> list)
