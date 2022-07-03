@@ -8,14 +8,15 @@ namespace ATMSimulator
 {
     /*The Atm class represents an ATM machine. The class displays the main menu and the account menu 
      * and performs the account management functions on a bank account: checking balance, withdrawal and depositing amount*/
-    class ATM : Bank
+    public class ATM : Bank, iTransaction
     {
         private enum Options
         {
             //MAIN MENU options
             SELECT_ACCOUNT_OPTION = 1,
             CREATE_ACCOUNT_OPTION = 2,
-            EXIT_ATM_APPLICATION_OPTION = 3,
+            VIEW_TRANSACTIONS = 3,
+            EXIT_ATM_APPLICATION_OPTION = 4,
 
             //ACCOUNT MENU options
             CHECK_BALANCE_OPTION = 1,
@@ -42,6 +43,9 @@ namespace ATMSimulator
                     case (int)Options.CREATE_ACCOUNT_OPTION:
                         OnCreateAccount();
                         break;
+                    case ((int)Options.VIEW_TRANSACTIONS):
+                        ViewTransaction();
+                        break;
                     case ((int)Options.EXIT_ATM_APPLICATION_OPTION):
                         SaveAccountData();
                         return;
@@ -58,11 +62,13 @@ namespace ATMSimulator
                 Console.WriteLine();
                 Console.WriteLine("1: Select Account");
                 Console.WriteLine("2: Create Account");
-                Console.WriteLine("3: Exit");
+                Console.WriteLine("3: View Transactions");
+                Console.WriteLine("4: Exit");
                 Console.WriteLine();
                 Console.WriteLine("Enter a choice: ");
                 int val = Convert.ToInt32(Console.ReadLine());
-                if (val == Convert.ToInt32(Options.SELECT_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.CREATE_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.EXIT_ATM_APPLICATION_OPTION))
+                if (val == Convert.ToInt32(Options.SELECT_ACCOUNT_OPTION) || val == Convert.ToInt32(Options.CREATE_ACCOUNT_OPTION) ||
+                    val == Convert.ToInt32(Options.VIEW_TRANSACTIONS) || val == Convert.ToInt32(Options.EXIT_ATM_APPLICATION_OPTION))
                 {
                     return val;
                 }
@@ -268,9 +274,21 @@ namespace ATMSimulator
 
         /* Print the Balance on the given account to the console */
         public void OnCheckBalance(Account account)
-        { 
+        {
             /* Arguments: Account List for which balance needs to be printed*/
-            Console.WriteLine("The balance in account " + account.acctNumber + " is " + account.acctBalance);
+
+            //Add transaction record - Start
+            Transaction tr = new Transaction()
+            {
+                TransactionAcctNo = account.acctNumber,
+                TransactionDate = DateTime.Now,
+                transactiontype = TransactionType.CheckBalance,
+                Description = "The balance in account " + account.acctNumber + " is " + account.acctBalance
+            };
+            InsertTransaction(tr);
+            //Add transaction record - End
+
+            Console.WriteLine(tr.Description);
         }
 
         /* Prompts the user to enter amount for deposit. Validates data for invalid value and incorrect amount */
@@ -298,6 +316,18 @@ namespace ATMSimulator
 
                     //If Amount is greater than 0, deposit the amount
                     account.acctBalance += amountToDeposit;
+
+                    //Add transaction record - Start
+                    Transaction tr = new Transaction()
+                    {
+                        TransactionAcctNo = account.acctNumber,
+                        TransactionDate = DateTime.Now,
+                        transactiontype = TransactionType.Deposit,
+                        Description = "Amount " + amountToDeposit + " deposited in account  " + account.acctNumber
+                    };
+                    InsertTransaction(tr);
+                    //Add transaction record - End
+                    Console.WriteLine(tr.Description);
 
                     return;
                 }
@@ -330,11 +360,30 @@ namespace ATMSimulator
 
                 //Withdraw amount if no errors found
                 if (amountToWithdraw >= 0)
+                {
                     account.acctBalance -= amountToWithdraw;
-
+                    //Add transaction record - Start
+                    Transaction tr = new Transaction()
+                    {
+                        TransactionAcctNo = account.acctNumber,
+                        TransactionDate = DateTime.Now,
+                        transactiontype = TransactionType.Withdrawal,
+                        Description = "Amount " + amountToWithdraw + " withdrawn from account  " + account.acctNumber
+                    };
+                    InsertTransaction(tr);
+                    //Add transaction record - End
+                    Console.WriteLine(tr.Description);
+                }
                 //the withdrawal was done or user entered nothing so break from the infinite loop
                 return;
             }
+        }
+
+        //Coded added to implemnet transaction recording
+
+        public new void InsertTransaction(Transaction transaction)
+        {
+            _listOfTransactions.Add(transaction);
         }
     }
 }

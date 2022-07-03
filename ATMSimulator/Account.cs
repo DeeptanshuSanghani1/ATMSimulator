@@ -93,32 +93,6 @@ namespace ATMSimulator
             this.annualIntrRate = 0.0;
         }
 
-        /* Deposit the given amount in the account and return the new balance */
-        /*public double Deposit(double amount)
-        {
-            /* Arguments: The amount to be deposited 
-             
-            if (amount < 0)
-            {
-                throw new InvalidTransaction("Invlaid amount provided. Cannot deposit a negative amount.");
-            }
-
-            return this.acctBalance + amount;
-        }*/
-
-        /* Withdraw the given amount from the account, reduce the balance and return the new balance */
-        /*public double Withdraw(double amount)
-        {
-            /* Arguments: The amount to be withdrawn
-            if (amount < 0)
-                throw new InvalidTransaction("Invalid amount provided. Cannot withdraw a negative amount.");
-
-            if (amount > this.acctBalance)
-                throw new InvalidTransaction("Insufficient funds. Cannot withdraw the provided amount.");
-
-            return this.acctBalance - amount;
-        }*/
-
         /* Load the account information from the given file */
 
         public List<Account> Load(string accountFile, List<Account> list)

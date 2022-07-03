@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Data;
 
 namespace ATMSimulator
 {
@@ -20,7 +21,7 @@ namespace ATMSimulator
     }
 
     //Class for Bank composed of a list of accounts. If accounts are not available, default accounts are created
-    public class Bank : Account
+    public class Bank : Account, iTransaction
     {
         //Define Constant Values
         private enum Constant
@@ -28,8 +29,12 @@ namespace ATMSimulator
             DEFAULT_ACCT_NO_START = 100
         }
 
-    //Account List to load and store the accounts and its attributes
-    public static List<Account> accountlist = new List<Account>();
+        //Account List to load and store the accounts and its attributes
+        public static List<Account> accountlist = new List<Account>();
+
+        //A list is used to record and store transactions instead of a database table
+        public static List<Transaction> _listOfTransactions = new List<Transaction>();
+
 
         /* Method to load the account data for all the accounts. */
         public void LoadAccountData()
@@ -80,7 +85,6 @@ namespace ATMSimulator
             //Create default accounts if no account files are found
             if (accountlist.Count == 0)
                 CreateDefaultAccounts();
-
         }
 
 
@@ -196,6 +200,45 @@ namespace ATMSimulator
                 acctBalance = _initialDepAmt,
                 annualIntrRate = _initialIntRate
                 });
+            //Add transaction record - Start
+            Transaction tr = new Transaction()
+            {
+                TransactionAcctNo = acctNumber,
+                TransactionDate = DateTime.Now,
+                transactiontype = TransactionType.NewAccountCreated,
+                Description = "New account created"
+            };
+            InsertTransaction(tr);
+            //Add transaction record - End
+            Console.WriteLine(tr.Description);
+
         }
+
+        public void InsertTransaction(Transaction transaction)
+        {
+            _listOfTransactions.Add(transaction);
+        }
+
+        public void ViewTransaction()
+        {
+
+            if (_listOfTransactions.Count <= 0)
+                Console.WriteLine("There are no transaction yet.");
+            else
+            {
+                int tablewidth = 70;
+                Console.WriteLine(new string('-', tablewidth));
+                //DataTable table = new DataTable();
+                Console.WriteLine(String.Format("{0,10 },{1,10 }, {2, 10}, {3, 10}", "Account No", "Date", "Type", "Descriptions"));
+
+                foreach (var tran in _listOfTransactions)
+                {
+                    Console.WriteLine(String.Format("{0,10 },{1,10 }, {2, 10}, {3, 10}", tran.TransactionAcctNo.ToString(),tran.TransactionDate.ToString("MM/dd/yyyy HH:mm"),
+                                                    tran.transactiontype,tran.Description));
+                }
+                Console.WriteLine("You have performed " + _listOfTransactions.Count + " transactions.");
+            }
+        }
+
     }
 }
